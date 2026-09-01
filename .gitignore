@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Flask / DB
+instance/
+*.db
+campus_board.db
+
+# Env vars
+.env
+
+# Editor
+.vscode/
+.idea/
+.DS_Store

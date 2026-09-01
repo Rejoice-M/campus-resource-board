@@ -1,0 +1,42 @@
+/* Week 5: Polish + styling.
+   Keep it clean and consistent — it doesn't need to be fancy. */
+
+body {
+    font-family: system-ui, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+    color: #1a1a1a;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+nav a {
+    margin-left: 1rem;
+}
+
+.listing-list {
+    list-style: none;
+    padding: 0;
+}
+
+.listing-list li {
+    border-bottom: 1px solid #eee;
+    padding: 0.75rem 0;
+}
+
+form label {
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.flashes {
+    color: #b00020;
+}

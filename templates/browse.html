@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Browse Listings{% endblock %}
+
+{% block content %}
+<form method="get" action="{{ url_for('listings.browse') }}">
+    <input type="text" name="q" placeholder="Search listings..." value="{{ request.args.get('q', '') }}">
+    <select name="category">
+        <option value="">All categories</option>
+        {% for c in categories %}
+            <option value="{{ c.id }}" {% if request.args.get('category')|string == c.id|string %}selected{% endif %}>
+                {{ c.name }}
+            </option>
+        {% endfor %}
+    </select>
+    <button type="submit">Search</button>
+</form>
+
+<ul class="listing-list">
+    {% for listing in listings %}
+        <li>
+            <a href="{{ url_for('listings.detail', listing_id=listing.id) }}">{{ listing.title }}</a>
+            — {{ listing.category.name }}
+            {% if listing.price %} — R{{ listing.price }}{% else %} — Free{% endif %}
+        </li>
+    {% else %}
+        <li>No listings yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
