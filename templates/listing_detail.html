@@ -2,9 +2,11 @@
 {% block title %}{{ listing.title }}{% endblock %}
 
 {% block content %}
-<h2>{{ listing.title }}</h2>
-<p><strong>Category:</strong> {{ listing.category.name }}</p>
-<p><strong>Posted by:</strong> {{ listing.owner.name }}</p>
-<p><strong>Price:</strong> {% if listing.price %}R{{ listing.price }}{% else %}Free{% endif %}</p>
-<p>{{ listing.description }}</p>
+<article class="listing-page cat-{{ listing.category.name|lower|replace(' ', '-') }}">
+    <span class="listing-category">{{ listing.category.name }}</span>
+    <h2>{{ listing.title }}</h2>
+    <p class="listing-meta">Posted by {{ listing.owner.name }}</p>
+    <p class="listing-price-large">{% if listing.price %}R{{ listing.price }}{% else %}Free{% endif %}</p>
+    <p class="listing-description">{{ listing.description }}</p>
+</article>
 {% endblock %}

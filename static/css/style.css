@@ -1,42 +1,369 @@
-/* Week 5: Polish + styling.
-   Keep it clean and consistent — it doesn't need to be fancy. */
+/* ============================================
+   Campus Resource Board — design tokens
+   Concept: library catalog card meets noticeboard.
+   Listings are color-coded by category so the board
+   scans at a glance, like flyers pinned to cork.
+   ============================================ */
 
-body {
-    font-family: system-ui, sans-serif;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 1rem;
-    color: #1a1a1a;
+:root {
+    --navy: #1E3A5F;
+    --navy-soft: #40587A;
+    --amber: #E8A33D;
+    --amber-dark: #C9861F;
+    --paper: #EEF1F0;
+    --surface: #FFFFFF;
+    --line: #DBE1DE;
+    --text: #1E2A2F;
+    --text-muted: #5B6B67;
+
+    --cat-textbooks: #3B6EA5;
+    --cat-study-groups: #5C8259;
+    --cat-tutoring: #C77F2E;
+
+    --radius: 8px;
+    --font-display: "Lora", Georgia, serif;
+    --font-body: "Inter", -apple-system, sans-serif;
 }
 
-header {
+* { box-sizing: border-box; }
+
+body {
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--text);
+    margin: 0;
+    line-height: 1.5;
+}
+
+main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+}
+
+h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--navy);
+    margin: 0 0 0.5rem;
+}
+
+a {
+    color: var(--navy);
+    text-decoration: none;
+}
+
+/* ---------- Header ---------- */
+
+.site-header {
+    background: var(--navy);
+    border-bottom: 3px solid var(--amber);
+}
+
+.header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
-nav a {
-    margin-left: 1rem;
+.brand {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
 }
 
-.listing-list {
+.site-header nav {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.site-header nav a {
+    color: #C9D6E3;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.site-header nav a:hover {
+    color: #fff;
+}
+
+.site-header nav a.nav-cta {
+    background: var(--amber);
+    color: var(--navy);
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+}
+
+.site-header nav a.nav-cta:hover {
+    background: var(--amber-dark);
+    color: #fff;
+}
+
+/* ---------- Flash messages ---------- */
+
+.flash-wrap {
+    max-width: 900px;
+    margin: 1rem auto 0;
+    padding: 0 1.5rem;
+}
+
+.flashes {
     list-style: none;
+    margin: 0;
     padding: 0;
 }
 
-.listing-list li {
-    border-bottom: 1px solid #eee;
-    padding: 0.75rem 0;
+.flashes li {
+    background: #FBEAEA;
+    border-left: 3px solid #B3382C;
+    color: #8A2C22;
+    padding: 0.65rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+    padding: 2.5rem 0 1.5rem;
+}
+
+.hero h2 {
+    font-size: 2rem;
+    max-width: 20ch;
+}
+
+.hero p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+/* ---------- Search bar ---------- */
+
+.search-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.search-bar input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-bar input,
+.search-bar select {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+.search-bar button {
+    padding: 0.6rem 1.25rem;
+    border: none;
+    border-radius: var(--radius);
+    background: var(--navy);
+    color: #fff;
+    font-weight: 600;
+    font-family: var(--font-body);
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background: var(--navy-soft);
+}
+
+/* ---------- Listing grid / cards ---------- */
+
+.listing-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.listing-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--navy);
+    border-radius: var(--radius);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.listing-card:hover {
+    box-shadow: 0 2px 10px rgba(30, 58, 95, 0.08);
+}
+
+.listing-card-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1rem;
+    color: inherit;
+}
+
+.listing-card h3 {
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+.listing-category {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.listing-price {
+    font-weight: 600;
+    color: var(--navy);
+    margin-top: 0.25rem;
+}
+
+/* Category color coding — the one bold structural device on the page */
+.cat-textbooks { border-left-color: var(--cat-textbooks); }
+.cat-textbooks .listing-category { color: var(--cat-textbooks); }
+
+.cat-study-groups { border-left-color: var(--cat-study-groups); }
+.cat-study-groups .listing-category { color: var(--cat-study-groups); }
+
+.cat-tutoring { border-left-color: var(--cat-tutoring); }
+.cat-tutoring .listing-category { color: var(--cat-tutoring); }
+
+.empty-state {
+    grid-column: 1 / -1;
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+}
+
+.empty-state a {
+    font-weight: 600;
+}
+
+/* ---------- Listing detail page ---------- */
+
+.listing-page {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--navy);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    max-width: 560px;
+}
+
+.listing-page h2 {
+    font-size: 1.6rem;
+    margin-top: 0.3rem;
+}
+
+.listing-meta {
+    color: var(--text-muted);
+    margin: 0 0 0.75rem;
+    font-size: 0.92rem;
+}
+
+.listing-price-large {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--amber-dark);
+    margin: 0 0 1rem;
+}
+
+.listing-description {
+    color: var(--text);
+    white-space: pre-wrap;
+}
+
+/* ---------- Forms ---------- */
+
+.form-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    max-width: 420px;
+}
+
+.form-card h2 {
+    font-size: 1.4rem;
 }
 
 form label {
     display: block;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
-.flashes {
-    color: #b00020;
+form input,
+form select,
+form textarea {
+    display: block;
+    width: 100%;
+    margin-top: 0.35rem;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+    outline: 2px solid var(--amber);
+    outline-offset: 1px;
+    background: var(--surface);
+}
+
+.btn-primary {
+    border: none;
+    border-radius: var(--radius);
+    background: var(--amber);
+    color: var(--navy);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.7rem 1.4rem;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: var(--amber-dark);
+    color: #fff;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 480px) {
+    .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .hero h2 {
+        font-size: 1.6rem;
+    }
 }

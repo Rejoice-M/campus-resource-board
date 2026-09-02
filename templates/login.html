@@ -2,9 +2,12 @@
 {% block title %}Log In{% endblock %}
 
 {% block content %}
-<form method="post">
-    <label>Email <input type="email" name="email" required></label>
-    <label>Password <input type="password" name="password" required></label>
-    <button type="submit">Log In</button>
-</form>
+<div class="form-card">
+    <h2>Welcome back</h2>
+    <form method="post">
+        <label>Email <input type="email" name="email" required></label>
+        <label>Password <input type="password" name="password" required></label>
+        <button type="submit" class="btn-primary">Log in</button>
+    </form>
+</div>
 {% endblock %}

@@ -2,8 +2,13 @@
 {% block title %}Browse Listings{% endblock %}
 
 {% block content %}
-<form method="get" action="{{ url_for('listings.browse') }}">
-    <input type="text" name="q" placeholder="Search listings..." value="{{ request.args.get('q', '') }}">
+<section class="hero">
+    <h2>Find what your campus is offering</h2>
+    <p>Textbooks, study groups, and tutoring — posted by students, for students.</p>
+</section>
+
+<form class="search-bar" method="get" action="{{ url_for('listings.browse') }}">
+    <input type="text" name="q" placeholder="Search by keyword..." value="{{ request.args.get('q', '') }}">
     <select name="category">
         <option value="">All categories</option>
         {% for c in categories %}
@@ -15,15 +20,17 @@
     <button type="submit">Search</button>
 </form>
 
-<ul class="listing-list">
+<ul class="listing-grid">
     {% for listing in listings %}
-        <li>
-            <a href="{{ url_for('listings.detail', listing_id=listing.id) }}">{{ listing.title }}</a>
-            — {{ listing.category.name }}
-            {% if listing.price %} — R{{ listing.price }}{% else %} — Free{% endif %}
+        <li class="listing-card cat-{{ listing.category.name|lower|replace(' ', '-') }}">
+            <a class="listing-card-link" href="{{ url_for('listings.detail', listing_id=listing.id) }}">
+                <span class="listing-category">{{ listing.category.name }}</span>
+                <h3>{{ listing.title }}</h3>
+                <span class="listing-price">{% if listing.price %}R{{ listing.price }}{% else %}Free{% endif %}</span>
+            </a>
         </li>
     {% else %}
-        <li>No listings yet.</li>
+        <li class="empty-state">Nothing posted yet — be the first to <a href="{{ url_for('listings.create') }}">add a listing</a>.</li>
     {% endfor %}
 </ul>
 {% endblock %}
