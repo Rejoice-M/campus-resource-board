@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="profile-grid">
+    <div class="form-card">
+        <h2>My details</h2>
+        <form method="post" action="{{ url_for('profile.edit') }}">
+            <label>Name <input type="text" name="name" value="{{ user.name }}" required></label>
+            <label>Email <input type="email" value="{{ user.email }}" disabled></label>
+            <label>University <input type="text" name="university" value="{{ user.university or '' }}"></label>
+            <label>Major / course of study <input type="text" name="major" value="{{ user.major or '' }}"></label>
+            <label>Year of study
+                <select name="year_of_study">
+                    <option value="" {% if not user.year_of_study %}selected{% endif %}>Prefer not to say</option>
+                    {% for y in ["1st year", "2nd year", "3rd year", "4th year", "Postgraduate"] %}
+                        <option value="{{ y }}" {% if user.year_of_study == y %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>Phone number <input type="tel" name="phone_number" value="{{ user.phone_number or '' }}" placeholder="Optional"></label>
+            <button type="submit" class="btn-primary">Save changes</button>
+        </form>
+    </div>
+
+    <div class="form-card">
+        <h2>Change password</h2>
+        <form method="post" action="{{ url_for('profile.change_password') }}">
+            <label>Current password <input type="password" name="current_password" required></label>
+            <label>New password <input type="password" name="new_password" minlength="8" required></label>
+            <label>Confirm new password <input type="password" name="confirm_password" minlength="8" required></label>
+            <button type="submit" class="btn-primary">Update password</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

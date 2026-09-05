@@ -5,6 +5,7 @@ Week 4 focus: browse page + search/filter by category and keyword.
 
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from models import db, Listing, Category
+from utils import login_required
 
 listings_bp = Blueprint("listings", __name__)
 
@@ -34,10 +35,8 @@ def detail(listing_id):
 
 
 @listings_bp.route("/listing/new", methods=["GET", "POST"])
+@login_required
 def create():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
-
     if request.method == "POST":
         listing = Listing(
             user_id=session["user_id"],

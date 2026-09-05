@@ -7,7 +7,25 @@
     <form method="post">
         <label>Name <input type="text" name="name" required></label>
         <label>Email <input type="email" name="email" required></label>
-        <label>Password <input type="password" name="password" required></label>
+        <label>Password <input type="password" name="password" minlength="8" required></label>
+        <label>Confirm password <input type="password" name="confirm_password" minlength="8" required></label>
+
+        <hr class="form-divider">
+        <p class="form-subtext">Optional — helps others find the right study group or tutor</p>
+
+        <label>University <input type="text" name="university" placeholder="e.g. University of Johannesburg"></label>
+        <label>Major / course of study <input type="text" name="major" placeholder="e.g. BSc Information Technology"></label>
+        <label>Year of study
+            <select name="year_of_study">
+                <option value="">Prefer not to say</option>
+                <option value="1st year">1st year</option>
+                <option value="2nd year">2nd year</option>
+                <option value="3rd year">3rd year</option>
+                <option value="4th year">4th year</option>
+                <option value="Postgraduate">Postgraduate</option>
+            </select>
+        </label>
+
         <button type="submit" class="btn-primary">Sign up</button>
     </form>
 </div>

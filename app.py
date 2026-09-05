@@ -19,9 +19,11 @@ def create_app():
     # Register blueprints (add these as you build each feature)
     from routes.auth import auth_bp
     from routes.listings import listings_bp
+    from routes.profile import profile_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(listings_bp)
+    app.register_blueprint(profile_bp)
 
     with app.app_context():
         db.create_all()  # fine for dev; use migrations later if this grows

@@ -5,6 +5,7 @@
 <div class="form-card">
     <h2>Welcome back</h2>
     <form method="post">
+        <input type="hidden" name="next" value="{{ next }}">
         <label>Email <input type="email" name="email" required></label>
         <label>Password <input type="password" name="password" required></label>
         <button type="submit" class="btn-primary">Log in</button>
