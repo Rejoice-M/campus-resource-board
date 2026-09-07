@@ -1,21 +1,22 @@
 {% extends "base.html" %}
-{% block title %}Post a Listing{% endblock %}
+{% block title %}{% if listing %}Edit Listing{% else %}Post a Listing{% endif %}{% endblock %}
 
 {% block content %}
+{% include "_back_link.html" %}
 <div class="form-card">
-    <h2>Post a listing</h2>
+    <h2>{% if listing %}Edit listing{% else %}Post a listing{% endif %}</h2>
     <form method="post">
-        <label>Title <input type="text" name="title" required></label>
+        <label>Title <input type="text" name="title" value="{{ listing.title if listing else '' }}" required></label>
         <label>Category
             <select name="category_id" required>
                 {% for c in categories %}
-                    <option value="{{ c.id }}">{{ c.name }}</option>
+                    <option value="{{ c.id }}" {% if listing and listing.category_id == c.id %}selected{% endif %}>{{ c.name }}</option>
                 {% endfor %}
             </select>
         </label>
-        <label>Description <textarea name="description" rows="4"></textarea></label>
-        <label>Price (leave blank if free) <input type="number" step="0.01" name="price" placeholder="0.00"></label>
-        <button type="submit" class="btn-primary">Post listing</button>
+        <label>Description <textarea name="description" rows="4">{{ listing.description if listing else '' }}</textarea></label>
+        <label>Price (leave blank if free) <input type="number" step="0.01" name="price" placeholder="0.00" value="{{ listing.price if listing and listing.price else '' }}"></label>
+        <button type="submit" class="btn-primary">{% if listing %}Save changes{% else %}Post listing{% endif %}</button>
     </form>
 </div>
 {% endblock %}

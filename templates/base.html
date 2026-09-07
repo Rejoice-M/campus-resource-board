@@ -8,37 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- Inline CSS for flash messages (or add to style.css) -->
-    <style>
-        .flash-wrap {
-            max-width: 800px;
-            margin: 1rem auto;
-            padding: 0 1rem;
-        }
-        .alert {
-            padding: 12px 20px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            font-weight: 500;
-            list-style: none;
-        }
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        /* Fallback for any other category */
-        .alert-message {
-            background-color: #e2e3e5;
-            color: #383d41;
-            border: 1px solid #d6d8db;
-        }
-    </style>
 </head>
 <body>
     <header class="site-header">
@@ -48,6 +17,7 @@
                 <a href="{{ url_for('listings.browse') }}">Browse</a>
                 <a class="nav-cta" href="{{ url_for('listings.create') }}">Post a listing</a>
                 {% if session.get('user_id') %}
+                    <a href="{{ url_for('messages.inbox') }}">Messages{% if unread_message_count %} <span class="unread-badge">{{ unread_message_count }}</span>{% endif %}</a>
                     <a href="{{ url_for('profile.view') }}">Profile</a>
                     <a href="{{ url_for('auth.logout') }}">Log out</a>
                 {% else %}
@@ -58,13 +28,14 @@
         </div>
     </header>
 
-    <!-- Flash messages with categories -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="flash-wrap">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category if category else 'message' }}">{{ message }}</div>
+                <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
                 {% endfor %}
+                </ul>
             </div>
         {% endif %}
     {% endwith %}

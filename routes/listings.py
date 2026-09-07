@@ -3,9 +3,9 @@ Week 3 focus: create/view/edit/delete listings (CRUD).
 Week 4 focus: browse page + search/filter by category and keyword.
 """
 
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from models import db, Listing, Category
-from utils import login_required
+from utils import login_required, require_ownership, current_user_owns
 
 listings_bp = Blueprint("listings", __name__)
 
@@ -31,7 +31,8 @@ def browse():
 @listings_bp.route("/listing/<int:listing_id>")
 def detail(listing_id):
     listing = Listing.query.get_or_404(listing_id)
-    return render_template("listing_detail.html", listing=listing)
+    is_owner = current_user_owns(listing)
+    return render_template("listing_detail.html", listing=listing, is_owner=is_owner)
 
 
 @listings_bp.route("/listing/new", methods=["GET", "POST"])
@@ -50,4 +51,33 @@ def create():
         return redirect(url_for("listings.detail", listing_id=listing.id))
 
     categories = Category.query.all()
-    return render_template("listing_form.html", categories=categories)
+    return render_template("listing_form.html", categories=categories, listing=None)
+
+
+@listings_bp.route("/listing/<int:listing_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit(listing_id):
+    listing = Listing.query.get_or_404(listing_id)
+    require_ownership(listing)
+
+    if request.method == "POST":
+        listing.title = request.form["title"]
+        listing.category_id = request.form["category_id"]
+        listing.description = request.form.get("description")
+        listing.price = request.form.get("price") or None
+        db.session.commit()
+        return redirect(url_for("listings.detail", listing_id=listing.id))
+
+    categories = Category.query.all()
+    return render_template("listing_form.html", categories=categories, listing=listing)
+
+
+@listings_bp.route("/listing/<int:listing_id>/delete", methods=["POST"])
+@login_required
+def delete(listing_id):
+    listing = Listing.query.get_or_404(listing_id)
+    require_ownership(listing)
+
+    db.session.delete(listing)
+    db.session.commit()
+    return redirect(url_for("listings.browse"))

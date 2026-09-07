@@ -21,14 +21,22 @@ def view():
 def edit():
     user = User.query.get_or_404(session["user_id"])
 
+    university = request.form.get("university", "").strip()
+    year_of_study = request.form.get("year_of_study", "").strip()
+    phone_number = request.form.get("phone_number", "").strip()
+
+    if not university or not year_of_study or not phone_number:
+        flash("University, year of study, and phone number are required.")
+        return redirect(url_for("profile.view"))
+
     user.name = request.form["name"].strip()
-    user.university = request.form.get("university", "").strip() or None
+    user.university = university
     user.major = request.form.get("major", "").strip() or None
-    user.year_of_study = request.form.get("year_of_study", "").strip() or None
-    user.phone_number = request.form.get("phone_number", "").strip() or None
+    user.year_of_study = year_of_study
+    user.phone_number = phone_number
 
     db.session.commit()
-    flash("Profile updated.", "success")  # <-- success category
+    flash("Profile updated.")
     return redirect(url_for("profile.view"))
 
 
@@ -42,18 +50,18 @@ def change_password():
     confirm_password = request.form["confirm_password"]
 
     if not user.check_password(current_password):
-        flash("Current password is incorrect.", "danger")  # <-- error category
+        flash("Current password is incorrect.")
         return redirect(url_for("profile.view"))
 
     if new_password != confirm_password:
-        flash("New passwords don't match.", "danger")
+        flash("New passwords don't match.")
         return redirect(url_for("profile.view"))
 
     if len(new_password) < 8:
-        flash("New password must be at least 8 characters.", "danger")
+        flash("New password must be at least 8 characters.")
         return redirect(url_for("profile.view"))
 
     user.set_password(new_password)
     db.session.commit()
-    flash("Password changed.", "success")  # <-- success category
+    flash("Password changed.")
     return redirect(url_for("profile.view"))

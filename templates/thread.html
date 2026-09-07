@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Message {{ other_user.name }}{% endblock %}
+
+{% block content %}
+{% include "_back_link.html" %}
+<div class="thread-card">
+    <div class="thread-header">
+        <h2>{{ other_user.name }}</h2>
+        <a class="thread-listing-link" href="{{ url_for('listings.detail', listing_id=listing.id) }}">
+            About: {{ listing.title }}
+        </a>
+    </div>
+
+    <div class="thread-messages">
+        {% for m in messages %}
+            <div class="message-bubble {% if m.sender_id == current_user_id %}mine{% else %}theirs{% endif %}">
+                <p>{{ m.body }}</p>
+                <span class="message-time">{{ m.sent_at.strftime("%d %b, %H:%M") }}</span>
+            </div>
+        {% else %}
+            <p class="thread-empty">No messages yet — say hello.</p>
+        {% endfor %}
+    </div>
+
+    <form method="post" class="thread-reply">
+        <textarea name="body" rows="3" placeholder="Write a message..." required></textarea>
+        <button type="submit" class="btn-primary">Send</button>
+    </form>
+</div>
+{% endblock %}

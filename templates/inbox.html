@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+<h2>Messages</h2>
+
+<ul class="conversation-list">
+    {% for c in conversations %}
+        <li class="conversation-item {% if c.unread %}unread{% endif %}">
+            <a href="{{ url_for('messages.thread', listing_id=c.listing.id, other_user_id=c.other_user.id) }}">
+                <div class="conversation-top">
+                    <span class="conversation-name">{{ c.other_user.name }}</span>
+                    <span class="conversation-time">{{ c.last_message.sent_at.strftime("%d %b") }}</span>
+                </div>
+                <span class="conversation-listing">{{ c.listing.title }}</span>
+                <p class="conversation-snippet">{{ c.last_message.body }}</p>
+            </a>
+        </li>
+    {% else %}
+        <li class="empty-state">No conversations yet — messages you send or receive from listings will show up here.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -2,11 +2,42 @@
 {% block title %}{{ listing.title }}{% endblock %}
 
 {% block content %}
+{% include "_back_link.html" %}
 <article class="listing-page cat-{{ listing.category.name|lower|replace(' ', '-') }}">
     <span class="listing-category">{{ listing.category.name }}</span>
     <h2>{{ listing.title }}</h2>
     <p class="listing-meta">Posted by {{ listing.owner.name }}</p>
     <p class="listing-price-large">{% if listing.price %}R{{ listing.price }}{% else %}Free{% endif %}</p>
     <p class="listing-description">{{ listing.description }}</p>
+
+    <div class="lister-info">
+        <h3>About the lister</h3>
+        <dl>
+            <dt>University</dt>
+            <dd>{{ listing.owner.university or "Not specified" }}</dd>
+
+            {% if listing.owner.major %}
+                <dt>Major</dt>
+                <dd>{{ listing.owner.major }}</dd>
+            {% endif %}
+
+            <dt>Year of study</dt>
+            <dd>{{ listing.owner.year_of_study or "Not specified" }}</dd>
+        </dl>
+    </div>
+
+    {% if is_owner %}
+        <div class="listing-owner-actions">
+            <a class="btn-secondary" href="{{ url_for('listings.edit', listing_id=listing.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('listings.delete', listing_id=listing.id) }}"
+                  onsubmit="return confirm('Delete this listing? This can\'t be undone.');">
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="listing-owner-actions">
+            <a class="btn-primary" href="{{ url_for('messages.thread', listing_id=listing.id, other_user_id=listing.user_id) }}">Contact lister</a>
+        </div>
+    {% endif %}
 </article>
 {% endblock %}

@@ -68,12 +68,18 @@ class Listing(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-# Stretch feature — build after MVP works
+# Real messaging (was stretch — now built)
 class Message(db.Model):
     __tablename__ = "messages"
 
     id = db.Column(db.Integer, primary_key=True)
     listing_id = db.Column(db.Integer, db.ForeignKey("listings.id"), nullable=False)
     sender_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     body = db.Column(db.Text, nullable=False)
     sent_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_read = db.Column(db.Boolean, default=False)
+
+    listing = db.relationship("Listing", backref="messages")
+    sender = db.relationship("User", foreign_keys=[sender_id])
+    receiver = db.relationship("User", foreign_keys=[receiver_id])

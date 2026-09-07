@@ -294,6 +294,35 @@ a {
     white-space: pre-wrap;
 }
 
+.lister-info {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+}
+
+.lister-info h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.6rem;
+}
+
+.lister-info dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.3rem 1rem;
+    margin: 0;
+}
+
+.lister-info dt {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.lister-info dd {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
 /* ---------- Forms ---------- */
 
 .form-card {
@@ -302,6 +331,47 @@ a {
     border-radius: var(--radius);
     padding: 1.75rem;
     max-width: 420px;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    max-width: 900px;
+}
+
+.profile-grid .form-card {
+    max-width: none;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.back-link:hover {
+    color: var(--navy);
+}
+
+.optional-tag {
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.form-divider {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 1.25rem 0 0.75rem;
+}
+
+.form-subtext {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin: 0 0 1rem;
 }
 
 .form-card h2 {
@@ -356,7 +426,199 @@ form textarea:focus {
     color: #fff;
 }
 
-/* ---------- Small screens ---------- */
+.listing-owner-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+}
+
+.btn-secondary,
+.btn-danger {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.1rem;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.btn-secondary {
+    color: var(--navy);
+}
+
+.btn-secondary:hover {
+    background: var(--paper);
+}
+
+.btn-danger {
+    color: #B3382C;
+    border-color: #E9C6C1;
+}
+
+.btn-danger:hover {
+    background: #FBEAEA;
+}
+
+/* ---------- Messaging ---------- */
+
+.unread-badge {
+    background: var(--amber);
+    color: var(--navy);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1rem 0.4rem;
+    border-radius: 999px;
+}
+
+.thread-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    max-width: 560px;
+    padding: 1.5rem;
+}
+
+.thread-header {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.thread-header h2 {
+    margin-bottom: 0.15rem;
+}
+
+.thread-listing-link {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.thread-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.message-bubble {
+    max-width: 75%;
+    padding: 0.55rem 0.8rem;
+    border-radius: var(--radius);
+    font-size: 0.92rem;
+}
+
+.message-bubble p {
+    margin: 0;
+}
+
+.message-bubble.mine {
+    align-self: flex-end;
+    background: var(--navy);
+    color: #fff;
+}
+
+.message-bubble.theirs {
+    align-self: flex-start;
+    background: var(--paper);
+    color: var(--text);
+}
+
+.message-time {
+    display: block;
+    font-size: 0.7rem;
+    opacity: 0.7;
+    margin-top: 0.25rem;
+}
+
+.thread-empty {
+    color: var(--text-muted);
+    text-align: center;
+    padding: 1.5rem 0;
+}
+
+.thread-reply {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
+.thread-reply textarea {
+    flex: 1;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    resize: vertical;
+}
+
+/* ---------- Inbox ---------- */
+
+.conversation-list {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    max-width: 600px;
+}
+
+.conversation-item {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--line);
+    border-radius: var(--radius);
+}
+
+.conversation-item.unread {
+    border-left-color: var(--amber);
+}
+
+.conversation-item a {
+    display: block;
+    padding: 0.9rem 1rem;
+    color: inherit;
+}
+
+.conversation-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+}
+
+.conversation-name {
+    font-weight: 600;
+    color: var(--navy);
+}
+
+.conversation-time {
+    color: var(--text-muted);
+}
+
+.conversation-listing {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--cat-textbooks);
+    margin: 0.15rem 0 0.3rem;
+}
+
+.conversation-snippet {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 @media (max-width: 480px) {
     .header-inner {

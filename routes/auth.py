@@ -17,10 +17,14 @@ def signup():
         password = request.form["password"]
         confirm_password = request.form["confirm_password"]
 
-        # Optional campus-context fields — fine to leave blank for now
-        university = request.form.get("university", "").strip() or None
-        major = request.form.get("major", "").strip() or None
-        year_of_study = request.form.get("year_of_study", "").strip() or None
+        university = request.form.get("university", "").strip()
+        major = request.form.get("major", "").strip() or None  # only optional field
+        year_of_study = request.form.get("year_of_study", "").strip()
+        phone_number = request.form.get("phone_number", "").strip()
+
+        if not university or not year_of_study or not phone_number:
+            flash("University, year of study, and phone number are required.")
+            return redirect(url_for("auth.signup"))
 
         if password != confirm_password:
             flash("Passwords don't match.")
@@ -40,6 +44,7 @@ def signup():
             university=university,
             major=major,
             year_of_study=year_of_study,
+            phone_number=phone_number,
         )
         user.set_password(password)
         db.session.add(user)

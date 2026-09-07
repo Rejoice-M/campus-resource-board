@@ -11,13 +11,15 @@
         <label>Confirm password <input type="password" name="confirm_password" minlength="8" required></label>
 
         <hr class="form-divider">
-        <p class="form-subtext">Optional — helps others find the right study group or tutor</p>
+        <p class="form-subtext">Helps other students know who they're dealing with</p>
 
-        <label>University <input type="text" name="university" placeholder="e.g. University of Johannesburg"></label>
-        <label>Major / course of study <input type="text" name="major" placeholder="e.g. BSc Information Technology"></label>
+        <label>University <input type="text" name="university" placeholder="e.g. University of Johannesburg" required></label>
+        <label>Major / course of study <span class="optional-tag">(optional)</span>
+            <input type="text" name="major" placeholder="e.g. BSc Information Technology">
+        </label>
         <label>Year of study
-            <select name="year_of_study">
-                <option value="">Prefer not to say</option>
+            <select name="year_of_study" required>
+                <option value="" disabled selected>Select one</option>
                 <option value="1st year">1st year</option>
                 <option value="2nd year">2nd year</option>
                 <option value="3rd year">3rd year</option>
@@ -25,6 +27,7 @@
                 <option value="Postgraduate">Postgraduate</option>
             </select>
         </label>
+        <label>Phone number <input type="tel" name="phone_number" placeholder="e.g. 082 123 4567" required></label>
 
         <button type="submit" class="btn-primary">Sign up</button>
     </form>
