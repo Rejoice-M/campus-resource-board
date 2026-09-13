@@ -17,18 +17,16 @@
             </option>
         {% endfor %}
     </select>
+    <select name="sort">
+        <option value="newest" {% if sort == "newest" %}selected{% endif %}>Newest first</option>
+        <option value="price_low" {% if sort == "price_low" %}selected{% endif %}>Price: low to high</option>
+    </select>
     <button type="submit">Search</button>
 </form>
 
 <ul class="listing-grid">
     {% for listing in listings %}
-        <li class="listing-card cat-{{ listing.category.name|lower|replace(' ', '-') }}">
-            <a class="listing-card-link" href="{{ url_for('listings.detail', listing_id=listing.id) }}">
-                <span class="listing-category">{{ listing.category.name }}</span>
-                <h3>{{ listing.title }}</h3>
-                <span class="listing-price">{% if listing.price %}R{{ listing.price }}{% else %}Free{% endif %}</span>
-            </a>
-        </li>
+        {% include "_listing_card.html" %}
     {% else %}
         <li class="empty-state">Nothing posted yet — be the first to <a href="{{ url_for('listings.create') }}">add a listing</a>.</li>
     {% endfor %}

@@ -64,7 +64,8 @@ class Listing(db.Model):
     title = db.Column(db.String(150), nullable=False)
     description = db.Column(db.Text, nullable=True)
     price = db.Column(db.Float, nullable=True)  # null/0 = free
-    status = db.Column(db.String(20), default="active")  # active / sold / resolved
+    status = db.Column(db.String(20), default="active")  # active / resolved
+    image_filename = db.Column(db.String(255), nullable=True)  # stored on disk in static/uploads/
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 

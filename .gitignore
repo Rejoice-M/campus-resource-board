@@ -10,6 +10,10 @@ instance/
 *.db
 campus_board.db
 
+# Uploaded listing photos — user content, not source code
+static/uploads/*
+!static/uploads/.gitkeep
+
 # Env vars
 .env
 

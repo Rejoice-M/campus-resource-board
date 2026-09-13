@@ -11,3 +11,8 @@ class Config:
         "DATABASE_URL", f"sqlite:///{os.path.join(BASE_DIR, 'campus_board.db')}"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # --- listing photo uploads ---
+    UPLOAD_FOLDER = os.path.join(BASE_DIR, "static", "uploads")
+    ALLOWED_IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "webp"}
+    MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5 MB — rejects anything bigger before it's even read

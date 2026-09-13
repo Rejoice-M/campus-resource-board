@@ -5,7 +5,7 @@
 {% include "_back_link.html" %}
 <div class="form-card">
     <h2>{% if listing %}Edit listing{% else %}Post a listing{% endif %}</h2>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         <label>Title <input type="text" name="title" value="{{ listing.title if listing else '' }}" required></label>
         <label>Category
             <select name="category_id" required>
@@ -16,6 +16,17 @@
         </label>
         <label>Description <textarea name="description" rows="4">{{ listing.description if listing else '' }}</textarea></label>
         <label>Price (leave blank if free) <input type="number" step="0.01" name="price" placeholder="0.00" value="{{ listing.price if listing and listing.price else '' }}"></label>
+
+        <label>Photo <span class="optional-tag">(optional, JPG/PNG/WEBP, max 5MB)</span>
+            {% if listing and listing.image_filename %}
+                <div class="current-image-preview">
+                    <img src="{{ url_for('static', filename='uploads/' + listing.image_filename) }}" alt="Current photo">
+                    <label class="remove-image-check"><input type="checkbox" name="remove_image" value="1"> Remove this photo</label>
+                </div>
+            {% endif %}
+            <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp">
+        </label>
+
         <button type="submit" class="btn-primary">{% if listing %}Save changes{% else %}Post listing{% endif %}</button>
     </form>
 </div>

@@ -3,7 +3,7 @@ Profile page: view/edit the logged-in user's own details, and change password.
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from models import db, User
+from models import db, User, Listing
 from utils import login_required
 
 profile_bp = Blueprint("profile", __name__)
@@ -13,7 +13,12 @@ profile_bp = Blueprint("profile", __name__)
 @login_required
 def view():
     user = User.query.get_or_404(session["user_id"])
-    return render_template("profile.html", user=user)
+    my_listings = (
+        Listing.query.filter_by(user_id=user.id)
+        .order_by(Listing.created_at.desc())
+        .all()
+    )
+    return render_template("profile.html", user=user, my_listings=my_listings)
 
 
 @profile_bp.route("/profile/edit", methods=["POST"])

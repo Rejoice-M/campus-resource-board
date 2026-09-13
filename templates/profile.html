@@ -36,4 +36,13 @@
         </form>
     </div>
 </div>
+
+<h2 class="section-heading">My listings</h2>
+<ul class="listing-grid">
+    {% for listing in my_listings %}
+        {% include "_listing_card.html" %}
+    {% else %}
+        <li class="empty-state">You haven't posted anything yet — <a href="{{ url_for('listings.create') }}">create a listing</a>.</li>
+    {% endfor %}
+</ul>
 {% endblock %}

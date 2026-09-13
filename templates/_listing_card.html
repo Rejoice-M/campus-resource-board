@@ -1,0 +1,17 @@
+<li class="listing-card cat-{{ listing.category.name|lower|replace(' ', '-') }} {% if listing.status != 'active' %}is-resolved{% endif %}">
+    <a class="listing-card-link" href="{{ url_for('listings.detail', listing_id=listing.id) }}">
+        {% if listing.image_filename %}
+            <img class="listing-thumb" src="{{ url_for('static', filename='uploads/' + listing.image_filename) }}" alt="{{ listing.title }}">
+        {% else %}
+            <div class="listing-thumb listing-thumb-placeholder">{{ listing.category.name[:1] }}</div>
+        {% endif %}
+        <div class="listing-card-body">
+            <span class="listing-category">
+                {{ listing.category.name }}
+                {% if listing.status != 'active' %}<span class="status-badge">Resolved</span>{% endif %}
+            </span>
+            <h3>{{ listing.title }}</h3>
+            <span class="listing-price">{% if listing.price %}R{{ listing.price }}{% else %}Free{% endif %}</span>
+        </div>
+    </a>
+</li>
