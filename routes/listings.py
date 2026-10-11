@@ -1,6 +1,6 @@
 """
-Week 3 focus: create/view/edit/delete listings (CRUD).
-Week 4 focus: browse page + search/filter by category and keyword.
+Create/view/edit/delete listings (CRUD).
+Browse page + search/filter by category and keyword.
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
@@ -33,7 +33,7 @@ def browse():
         )
 
     if sort == "price_low":
-        # Free listings (price is NULL) sort first either way — nullsfirst keeps that explicit
+        # Free listings (price is NULL) sort first either way, nullsfirst keeps that explicit
         query = query.order_by(Listing.price.asc().nullsfirst())
     else:
         query = query.order_by(Listing.created_at.desc())
@@ -49,7 +49,7 @@ def browse():
 @listings_bp.route("/listing/<int:listing_id>")
 def detail(listing_id):
     listing = Listing.query.get_or_404(listing_id)
-    is_owner = current_user_owns(listing)
+    is_owner = current_user_owns(listing)   # controls edit/delete UI in the template
     return render_template("listing_detail.html", listing=listing, is_owner=is_owner)
 
 
@@ -62,6 +62,7 @@ def create():
         try:
             image_filename = save_listing_image(request.files.get("image"))
         except ValueError as e:
+            # Bad file type/size, re-render with the form intact rather than losing input
             flash(str(e))
             return render_template("listing_form.html", categories=categories, listing=None)
 
@@ -70,7 +71,7 @@ def create():
             category_id=request.form["category_id"],
             title=request.form["title"],
             description=request.form.get("description"),
-            price=request.form.get("price") or None,
+            price=request.form.get("price") or None,    # empty string -> NULL (free)
             image_filename=image_filename,
         )
         db.session.add(listing)
@@ -96,6 +97,7 @@ def edit(listing_id):
 
         remove_image = request.form.get("remove_image") == "1"
 
+        # New upload wins over a remove request; otherwise honour the checkbox
         if new_image:
             delete_listing_image(listing.image_filename)
             listing.image_filename = new_image
@@ -119,7 +121,7 @@ def delete(listing_id):
     listing = Listing.query.get_or_404(listing_id)
     require_ownership(listing)
 
-    delete_listing_image(listing.image_filename)
+    delete_listing_image(listing.image_filename)    # don't orphan the file on disk
     db.session.delete(listing)
     db.session.commit()
     return redirect(url_for("listings.browse"))
@@ -131,6 +133,7 @@ def toggle_status(listing_id):
     listing = Listing.query.get_or_404(listing_id)
     require_ownership(listing)
 
+    # Flip between the only two valid states
     listing.status = "resolved" if listing.status == "active" else "active"
     db.session.commit()
     return redirect(url_for("listings.detail", listing_id=listing.id))

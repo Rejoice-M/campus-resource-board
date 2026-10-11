@@ -12,8 +12,6 @@ from PIL import Image
 def login_required(view_func):
     """
     Redirect to login if there's no user_id in session.
-    Also remembers where the user was trying to go, so login() can
-    send them back there instead of always landing on the browse page.
     """
     @wraps(view_func)
     def wrapped(*args, **kwargs):
@@ -26,7 +24,6 @@ def login_required(view_func):
 def current_user_owns(resource):
     """
     True if the logged-in user's id matches resource.user_id.
-    Use this before allowing any edit/delete action.
     """
     return session.get("user_id") == resource.user_id
 
@@ -46,7 +43,6 @@ def require_thread_participant(listing, other_user_id):
     A message thread exists between the listing's owner and one other user.
     Valid only if the current user IS the owner (talking to some buyer),
     or the current user IS that buyer (talking to the owner).
-    Anything else — e.g. trying to view someone else's conversation — is 403.
     """
     uid = session.get("user_id")
     is_owner = uid == listing.user_id
@@ -72,7 +68,6 @@ def save_listing_image(file_storage):
     if ext not in current_app.config["ALLOWED_IMAGE_EXTENSIONS"]:
         raise ValueError("Image must be a JPG, PNG, or WEBP file.")
 
-    # Don't just trust the extension — actually open the file as an image.
     # This catches a disguised file (e.g. a script renamed to photo.jpg)
     # that would otherwise get saved and served straight to other users.
     try:

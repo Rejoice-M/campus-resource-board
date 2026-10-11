@@ -4,7 +4,6 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    # Swap this for a real secret (env var) before deploying anywhere public
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-change-me")
 
     SQLALCHEMY_DATABASE_URI = os.environ.get(

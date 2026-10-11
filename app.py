@@ -1,10 +1,3 @@
-"""
-Campus Resource Board - Flask app entry point.
-
-Week 1 goal: get this running locally with an empty DB and one working route.
-Run with: flask --app app run --debug
-"""
-
 from flask import Flask
 from config import Config
 from models import db
@@ -16,7 +9,8 @@ def create_app():
 
     db.init_app(app)
 
-    # Register blueprints (add these as you build each feature)
+    # Imported inside create_app (not at module top) to avoid circular imports
+    # between the app factory and the route modules
     from routes.auth import auth_bp
     from routes.listings import listings_bp
     from routes.profile import profile_bp
@@ -28,21 +22,23 @@ def create_app():
     app.register_blueprint(messages_bp)
 
     with app.app_context():
-        db.create_all()  # fine for dev; use migrations later if this grows
+        db.create_all()  
 
+    # Runs on every render_template call, so the unread badge is available
+    # in every template without each route passing it in
     @app.context_processor
     def inject_unread_count():
         from flask import session
         from models import Message
         uid = session.get("user_id")
         if not uid:
-            return {"unread_message_count": 0}
+            return {"unread_message_count": 0}  # logged-out visitors see nothing
         count = Message.query.filter_by(receiver_id=uid, is_read=False).count()
         return {"unread_message_count": count}
 
     return app
 
-
+# Module-level instance so `flask run` / WSGI servers can find it
 app = create_app()
 
 if __name__ == "__main__":

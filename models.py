@@ -1,8 +1,3 @@
-"""
-SQLAlchemy models — mirrors the schema in the project plan doc.
-Design these on paper first, then let this file be the implementation.
-"""
-
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,31 +8,31 @@ db = SQLAlchemy()
 class User(db.Model):
     __tablename__ = "users"
 
-    # --- core fields ---
+    # core fields
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
 
-    # --- campus-context fields (MVP) ---
+    # campus-context fields 
     university = db.Column(db.String(200), nullable=True)
     major = db.Column(db.String(100), nullable=True)
-    year_of_study = db.Column(db.String(50), nullable=True)  # e.g. "2nd year"
+    year_of_study = db.Column(db.String(50), nullable=True)  
 
-    # --- future-proofing fields ---
+    # future-proofing fields
     phone_number = db.Column(db.String(20), nullable=True)
-    profile_picture = db.Column(db.String(200), nullable=True)  # URL or filename, not yet used in UI
+    profile_picture = db.Column(db.String(200), nullable=True)  # URL or filename
 
-    # --- timestamps ---
+    # timestamps 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    # --- moderation flag (not yet exposed anywhere) ---
+    # moderation flag 
     is_active = db.Column(db.Boolean, default=True)
 
     listings = db.relationship("Listing", backref="owner", lazy=True)
 
-    # --- password helpers, so routes never touch generate/check_password_hash directly ---
+    # password helpers, so routes never touch generate/check_password_hash directly 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -69,7 +64,6 @@ class Listing(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-# Real messaging (was stretch — now built)
 class Message(db.Model):
     __tablename__ = "messages"
 

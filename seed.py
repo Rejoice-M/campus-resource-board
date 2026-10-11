@@ -1,7 +1,3 @@
-"""
-Run once after the DB is created to populate the fixed category list.
-Usage: python seed.py
-"""
 
 from app import create_app
 from models import db, Category

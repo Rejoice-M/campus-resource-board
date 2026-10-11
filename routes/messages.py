@@ -25,7 +25,7 @@ def inbox():
     )
 
     # Collapse into one row per (listing, other participant), keeping only
-    # the most recent message in each — relies on the query above already
+    # the most recent message in each, relies on the query above already
     # being sorted newest-first, so the first one seen per key wins.
     conversations = []
     seen = set()
@@ -59,6 +59,7 @@ def thread(listing_id, other_user_id):
     listing = Listing.query.get_or_404(listing_id)
     other_user = User.query.get_or_404(other_user_id)
 
+    # A thread is always between two distinct people
     if other_user_id == uid:
         flash("You can't message yourself about your own listing.")
         return redirect(url_for("listings.detail", listing_id=listing.id))
@@ -67,7 +68,7 @@ def thread(listing_id, other_user_id):
 
     if request.method == "POST":
         body = request.form.get("body", "").strip()
-        if body:
+        if body:    # silently ignore empty submissions
             db.session.add(Message(
                 listing_id=listing.id,
                 sender_id=uid,
@@ -77,6 +78,7 @@ def thread(listing_id, other_user_id):
             db.session.commit()
         return redirect(url_for("messages.thread", listing_id=listing.id, other_user_id=other_user_id))
 
+    # Both directions count as the same thread
     thread_messages = (
         Message.query.filter(
             Message.listing_id == listing.id,
