@@ -5,6 +5,7 @@
 <div class="form-card">
     <h2>Welcome back</h2>
     <form method="post">
+        {% include "_csrf.html" %}
         <input type="hidden" name="next" value="{{ next }}">
         <label>Email <input type="email" name="email" required></label>
         <label>Password <input type="password" name="password" required></label>

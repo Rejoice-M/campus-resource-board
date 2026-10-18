@@ -16,7 +16,8 @@
             <nav>
                 <a href="{{ url_for('listings.browse') }}">Browse</a>
                 <a class="nav-cta" href="{{ url_for('listings.create') }}">Post a listing</a>
-                {% if session.get('user_id') %}
+                {% if current_user %}
+                    {% if current_user.is_admin %}<a href="{{ url_for('admin.dashboard') }}">Admin{% if open_report_count %} <span class="unread-badge">{{ open_report_count }}</span>{% endif %}</a>{% endif %}
                     <a href="{{ url_for('messages.inbox') }}">Messages{% if unread_message_count %} <span class="unread-badge">{{ unread_message_count }}</span>{% endif %}</a>
                     <a href="{{ url_for('profile.view') }}">Profile</a>
                     <a href="{{ url_for('auth.logout') }}">Log out</a>
@@ -28,12 +29,12 @@
         </div>
     </header>
 
-    {% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flash-wrap">
                 <ul class="flashes">
-                {% for message in messages %}
-                    <li>{{ message }}</li>
+                {% for category, message in messages %}
+                    <li class="flash-{{ category }}">{{ message }}</li>
                 {% endfor %}
                 </ul>
             </div>

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Admin dashboard{% endblock %}
+
+{% block content %}
+<h2>Admin</h2>
+{% include "admin/_nav.html" %}
+
+<div class="stat-grid">
+    <div class="stat-card">
+        <span class="stat-number">{{ stats.users_active }}<span class="stat-of"> / {{ stats.users_total }}</span></span>
+        <span class="stat-label">Active users</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-number">{{ stats.new_users_week }}</span>
+        <span class="stat-label">New users, last 7 days</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-number">{{ stats.listings_active }}</span>
+        <span class="stat-label">Active listings</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-number">{{ stats.listings_resolved }}</span>
+        <span class="stat-label">Resolved listings</span>
+    </div>
+    <a class="stat-card {% if stats.open_reports %}stat-alert{% endif %}" href="{{ url_for('admin.reports') }}">
+        <span class="stat-number">{{ stats.open_reports }}</span>
+        <span class="stat-label">Open reports</span>
+    </a>
+</div>
+
+<div class="admin-columns">
+    <section class="admin-panel">
+        <h3>Listings per category</h3>
+        <ul class="plain-list">
+            {% for name, count in per_category %}
+                <li><span>{{ name }}</span><strong>{{ count }}</strong></li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section class="admin-panel">
+        <h3>Recent admin activity</h3>
+        {% if recent_log %}
+            <ul class="plain-list">
+                {% for e in recent_log %}
+                    <li>
+                        <span>{{ e.action|replace('_', ' ')|capitalize }} <span class="muted">by {{ e.admin.name }}</span></span>
+                        <span class="muted">{{ e.created_at.strftime("%d %b, %H:%M") }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+            <a class="panel-link" href="{{ url_for('admin.log') }}">See full log</a>
+        {% else %}
+            <p class="muted">No admin actions yet.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

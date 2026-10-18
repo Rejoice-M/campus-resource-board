@@ -30,19 +30,18 @@ def edit():
     year_of_study = request.form.get("year_of_study", "").strip()
     phone_number = request.form.get("phone_number", "").strip()
 
-    # Same required-field rules as signup
     if not university or not year_of_study or not phone_number:
         flash("University, year of study, and phone number are required.")
         return redirect(url_for("profile.view"))
 
     user.name = request.form["name"].strip()
     user.university = university
-    user.major = request.form.get("major", "").strip() or None  # only optional field
+    user.major = request.form.get("major", "").strip() or None
     user.year_of_study = year_of_study
     user.phone_number = phone_number
 
     db.session.commit()
-    flash("Profile updated.")
+    flash("Profile updated.", "success")
     return redirect(url_for("profile.view"))
 
 
@@ -55,7 +54,6 @@ def change_password():
     new_password = request.form["new_password"]
     confirm_password = request.form["confirm_password"]
 
-    # Require the old password even though the user is already logged in
     if not user.check_password(current_password):
         flash("Current password is incorrect.")
         return redirect(url_for("profile.view"))
@@ -70,5 +68,5 @@ def change_password():
 
     user.set_password(new_password)
     db.session.commit()
-    flash("Password changed.")
+    flash("Password changed.", "success")
     return redirect(url_for("profile.view"))

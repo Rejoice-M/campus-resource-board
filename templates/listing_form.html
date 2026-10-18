@@ -6,6 +6,7 @@
 <div class="form-card">
     <h2>{% if listing %}Edit listing{% else %}Post a listing{% endif %}</h2>
     <form method="post" enctype="multipart/form-data">
+        {% include "_csrf.html" %}
         <label>Title <input type="text" name="title" value="{{ listing.title if listing else '' }}" required></label>
         <label>Category
             <select name="category_id" required>

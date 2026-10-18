@@ -5,13 +5,16 @@ Small shared helpers used across route files.
 import os
 import uuid
 from functools import wraps
-from flask import session, redirect, url_for, request, abort, current_app
+from urllib.parse import urlparse
+from flask import session, redirect, url_for, request, abort, current_app, g
 from PIL import Image
 
 
 def login_required(view_func):
     """
     Redirect to login if there's no user_id in session.
+    Also remembers where the user was trying to go, so login() can
+    send them back there instead of always landing on the browse page.
     """
     @wraps(view_func)
     def wrapped(*args, **kwargs):
@@ -24,6 +27,7 @@ def login_required(view_func):
 def current_user_owns(resource):
     """
     True if the logged-in user's id matches resource.user_id.
+    Use this before allowing any edit/delete action.
     """
     return session.get("user_id") == resource.user_id
 
@@ -43,6 +47,7 @@ def require_thread_participant(listing, other_user_id):
     A message thread exists between the listing's owner and one other user.
     Valid only if the current user IS the owner (talking to some buyer),
     or the current user IS that buyer (talking to the owner).
+    Anything else — e.g. trying to view someone else's conversation — is 403.
     """
     uid = session.get("user_id")
     is_owner = uid == listing.user_id
@@ -68,6 +73,7 @@ def save_listing_image(file_storage):
     if ext not in current_app.config["ALLOWED_IMAGE_EXTENSIONS"]:
         raise ValueError("Image must be a JPG, PNG, or WEBP file.")
 
+    # Don't just trust the extension — actually open the file as an image.
     # This catches a disguised file (e.g. a script renamed to photo.jpg)
     # that would otherwise get saved and served straight to other users.
     try:
@@ -91,3 +97,30 @@ def delete_listing_image(filename):
     path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
     if os.path.exists(path):
         os.remove(path)
+
+
+def is_safe_redirect(path):
+    """
+    Only allow redirects to a path on THIS site (e.g. "/profile").
+    Blocks "https://evil.com" and "//evil.com", which would otherwise let
+    a crafted login link bounce a user to another site after they log in.
+    """
+    if not path or not path.startswith("/") or path.startswith("//") or "\\" in path:
+        return False
+    parsed = urlparse(path)
+    return not parsed.scheme and not parsed.netloc
+
+
+def log_admin_action(action, target_type=None, target_id=None, details=None):
+    """
+    Queue an AdminLog row for the current admin. Doesn't commit — the caller
+    commits it together with the change it describes, so the two can't drift apart.
+    """
+    from models import db, AdminLog
+    db.session.add(AdminLog(
+        admin_id=g.current_user.id,
+        action=action,
+        target_type=target_type,
+        target_id=target_id,
+        details=(details or "")[:500] or None,
+    ))

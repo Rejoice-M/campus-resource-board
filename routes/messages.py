@@ -25,7 +25,7 @@ def inbox():
     )
 
     # Collapse into one row per (listing, other participant), keeping only
-    # the most recent message in each, relies on the query above already
+    # the most recent message in each — relies on the query above already
     # being sorted newest-first, so the first one seen per key wins.
     conversations = []
     seen = set()
@@ -33,6 +33,12 @@ def inbox():
 
     for m in all_messages:
         other_id = m.receiver_id if m.sender_id == uid else m.sender_id
+        other = m.sender if m.sender_id != uid else m.receiver
+
+        # Conversations with deactivated accounts are closed, so they drop out of the inbox
+        if not other.is_active:
+            continue
+
         key = (m.listing_id, other_id)
 
         if m.receiver_id == uid and not m.is_read:
@@ -59,7 +65,10 @@ def thread(listing_id, other_user_id):
     listing = Listing.query.get_or_404(listing_id)
     other_user = User.query.get_or_404(other_user_id)
 
-    # A thread is always between two distinct people
+    if not other_user.is_active:
+        flash("That user is no longer available.")
+        return redirect(url_for("messages.inbox"))
+
     if other_user_id == uid:
         flash("You can't message yourself about your own listing.")
         return redirect(url_for("listings.detail", listing_id=listing.id))
@@ -68,7 +77,7 @@ def thread(listing_id, other_user_id):
 
     if request.method == "POST":
         body = request.form.get("body", "").strip()
-        if body:    # silently ignore empty submissions
+        if body:
             db.session.add(Message(
                 listing_id=listing.id,
                 sender_id=uid,
@@ -78,7 +87,6 @@ def thread(listing_id, other_user_id):
             db.session.commit()
         return redirect(url_for("messages.thread", listing_id=listing.id, other_user_id=other_user_id))
 
-    # Both directions count as the same thread
     thread_messages = (
         Message.query.filter(
             Message.listing_id == listing.id,

@@ -7,6 +7,7 @@
     <div class="form-card">
         <h2>My details</h2>
         <form method="post" action="{{ url_for('profile.edit') }}">
+        {% include "_csrf.html" %}
             <label>Name <input type="text" name="name" value="{{ user.name }}" required></label>
             <label>Email <input type="email" value="{{ user.email }}" disabled></label>
             <label>University <input type="text" name="university" value="{{ user.university or '' }}" required></label>
@@ -29,6 +30,7 @@
     <div class="form-card">
         <h2>Change password</h2>
         <form method="post" action="{{ url_for('profile.change_password') }}">
+        {% include "_csrf.html" %}
             <label>Current password <input type="password" name="current_password" required></label>
             <label>New password <input type="password" name="new_password" minlength="8" required></label>
             <label>Confirm new password <input type="password" name="confirm_password" minlength="8" required></label>

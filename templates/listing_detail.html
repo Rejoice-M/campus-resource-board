@@ -36,18 +36,21 @@
         <div class="listing-owner-actions">
             <a class="btn-secondary" href="{{ url_for('listings.edit', listing_id=listing.id) }}">Edit</a>
             <form method="post" action="{{ url_for('listings.toggle_status', listing_id=listing.id) }}">
+        {% include "_csrf.html" %}
                 <button type="submit" class="btn-secondary">
                     {% if listing.status == 'active' %}Mark as resolved{% else %}Mark as active{% endif %}
                 </button>
             </form>
             <form method="post" action="{{ url_for('listings.delete', listing_id=listing.id) }}"
                   onsubmit="return confirm('Delete this listing? This can\'t be undone.');">
+        {% include "_csrf.html" %}
                 <button type="submit" class="btn-danger">Delete</button>
             </form>
         </div>
     {% else %}
         <div class="listing-owner-actions">
             <a class="btn-primary" href="{{ url_for('messages.thread', listing_id=listing.id, other_user_id=listing.user_id) }}">Contact lister</a>
+            <a class="report-link" href="{{ url_for('listings.report', listing_id=listing.id) }}">Report this listing</a>
         </div>
     {% endif %}
 </article>

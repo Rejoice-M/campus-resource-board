@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Admin: users{% endblock %}
+
+{% block content %}
+<h2>Admin</h2>
+{% include "admin/_nav.html" %}
+
+<form class="search-bar" method="get" action="{{ url_for('admin.users') }}">
+    <input type="text" name="q" placeholder="Search name, email or university..." value="{{ q }}">
+    <button type="submit">Search</button>
+</form>
+
+<p class="muted">{{ total }} user{{ '' if total == 1 else 's' }}{% if total > limit %} — showing the newest {{ limit }}{% endif %}</p>
+
+<div class="table-wrap">
+<table class="admin-table">
+    <thead>
+        <tr><th>User</th><th>Campus</th><th>Listings</th><th>Joined</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+        {% for u in users %}
+            <tr>
+                <td>{{ u.name }}<br><span class="muted">{{ u.email }}</span></td>
+                <td>{{ u.university or '—' }}<br><span class="muted">{{ u.year_of_study or '' }}</span></td>
+                <td>{{ listing_counts.get(u.id, 0) }}</td>
+                <td class="nowrap">{{ u.created_at.strftime("%d %b %Y") }}</td>
+                <td>
+                    {% if u.is_admin %}<span class="role-badge">Admin</span>{% endif %}
+                    {% if u.is_active %}Active{% else %}<span class="status-badge">Deactivated</span>{% endif %}
+                </td>
+                <td>
+                    {% if u.id == current_user.id or u.is_admin %}
+                        <span class="muted">—</span>
+                    {% elif u.is_active %}
+                        <form method="post" action="{{ url_for('admin.toggle_user_active', user_id=u.id) }}"
+                              onsubmit="return confirm('Deactivate this user? They will be signed out and their listings hidden.');">
+                            {% include "_csrf.html" %}
+                            <button type="submit" class="btn-danger btn-small">Deactivate</button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="{{ url_for('admin.toggle_user_active', user_id=u.id) }}">
+                            {% include "_csrf.html" %}
+                            <button type="submit" class="btn-secondary btn-small">Reactivate</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="6" class="muted">No users match.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

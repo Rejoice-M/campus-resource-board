@@ -1,3 +1,10 @@
+/* ============================================
+   Campus Resource Board — design tokens
+   Concept: library catalog card meets noticeboard.
+   Listings are color-coded by category so the board
+   scans at a glance, like flyers pinned to cork.
+   ============================================ */
+
 :root {
     --navy: #1E3A5F;
     --navy-soft: #40587A;
@@ -693,6 +700,208 @@ form textarea:focus {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/* ---------- Flash variants, shared small bits ---------- */
+
+.flashes li { margin-bottom: 0.4rem; }
+
+.flashes li.flash-success {
+    background: #E8F2E8;
+    border-left-color: var(--cat-study-groups);
+    color: #2F5A2C;
+}
+
+.muted { color: var(--text-muted); font-size: 0.85rem; }
+.nowrap { white-space: nowrap; }
+
+.btn-small { padding: 0.35rem 0.75rem; font-size: 0.82rem; }
+
+.report-link {
+    margin-left: auto;
+    align-self: center;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    text-decoration: underline;
+}
+
+.report-link:hover { color: #B3382C; }
+
+/* ---------- Admin ---------- */
+
+.admin-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--line);
+    margin: 0.5rem 0 1.5rem;
+}
+
+.admin-nav a {
+    padding: 0.55rem 0.9rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+}
+
+.admin-nav a:hover { color: var(--navy); }
+
+.admin-nav a.active {
+    color: var(--navy);
+    border-bottom-color: var(--amber);
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--navy);
+    border-radius: var(--radius);
+    padding: 1rem;
+    color: inherit;
+}
+
+.stat-card.stat-alert { border-left-color: #B3382C; }
+a.stat-card:hover { box-shadow: 0 2px 10px rgba(30, 58, 95, 0.08); }
+
+.stat-number {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.1;
+}
+
+.stat-of { font-size: 1rem; color: var(--text-muted); }
+.stat-label { font-size: 0.82rem; color: var(--text-muted); }
+
+.admin-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.admin-panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+}
+
+.admin-panel h3 { font-size: 1rem; margin-bottom: 0.75rem; }
+
+.plain-list { list-style: none; margin: 0; padding: 0; }
+
+.plain-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.9rem;
+}
+
+.plain-list li:last-child { border-bottom: none; }
+
+.panel-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.table-wrap { overflow-x: auto; }
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 0.88rem;
+}
+
+.admin-table th {
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.65rem 0.8rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+}
+
+.admin-table td {
+    padding: 0.7rem 0.8rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+}
+
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table form { margin: 0; }
+
+.flag-badge,
+.role-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    margin-left: 0.3rem;
+}
+
+.flag-badge { background: #FBEAEA; color: #8A2C22; }
+.role-badge { background: var(--navy); color: #fff; margin-left: 0; margin-right: 0.3rem; }
+
+.filter-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
+
+.filter-tabs a {
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    background: var(--surface);
+    color: var(--text-muted);
+}
+
+.filter-tabs a.active {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+}
+
+.report-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 4px solid #B3382C;
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.report-card.status-dismissed,
+.report-card.status-actioned { border-left-color: var(--line); }
+
+.report-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.report-head h3 { font-size: 1.05rem; margin: 0; margin-right: 0.4rem; }
+.report-card p { margin: 0.4rem 0 0; }
+.report-details { white-space: pre-wrap; font-size: 0.92rem; }
+.report-actions { display: flex; gap: 0.6rem; margin-top: 0.9rem; }
+.report-actions form { margin: 0; }
+
+/* ---------- Small screens ---------- */
 
 @media (max-width: 480px) {
     .header-inner {

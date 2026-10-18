@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Admin: reports{% endblock %}
+
+{% block content %}
+<h2>Admin</h2>
+{% include "admin/_nav.html" %}
+
+<div class="filter-tabs">
+    {% for key, label in [('open', 'Open'), ('dismissed', 'Dismissed'), ('actioned', 'Actioned'), ('all', 'All')] %}
+        <a href="{{ url_for('admin.reports', status=key) }}" class="{% if status == key %}active{% endif %}">{{ label }}</a>
+    {% endfor %}
+</div>
+
+{% for r in reports %}
+    <article class="report-card status-{{ r.status }}">
+        <div class="report-head">
+            <h3>
+                {% if r.listing %}
+                    <a href="{{ url_for('listings.detail', listing_id=r.listing.id) }}">{{ r.listing_title }}</a>
+                {% else %}
+                    {{ r.listing_title }} <span class="muted">(removed)</span>
+                {% endif %}
+            </h3>
+            <span class="flag-badge">{{ r.reason }}</span>
+            <span class="status-badge">{{ r.status|capitalize }}</span>
+        </div>
+        <p class="muted">Reported by {{ r.reporter.name }} on {{ r.created_at.strftime("%d %b %Y, %H:%M") }}</p>
+        {% if r.details %}<p class="report-details">{{ r.details }}</p>{% endif %}
+
+        {% if r.status == 'open' %}
+            <div class="report-actions">
+                <form method="post" action="{{ url_for('admin.dismiss_report', report_id=r.id) }}">
+                    {% include "_csrf.html" %}
+                    <button type="submit" class="btn-secondary btn-small">Dismiss</button>
+                </form>
+                {% if r.listing %}
+                    <form method="post" action="{{ url_for('admin.remove_reported_listing', report_id=r.id) }}"
+                          onsubmit="return confirm('Permanently remove this listing, its photo and its conversations?');">
+                        {% include "_csrf.html" %}
+                        <button type="submit" class="btn-danger btn-small">Remove listing</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% else %}
+            <p class="muted">
+                {{ 'Dismissed' if r.status == 'dismissed' else 'Listing removed' }}
+                {% if r.resolved_by %}by {{ r.resolved_by.name }}{% endif %}
+                {% if r.resolved_at %}on {{ r.resolved_at.strftime("%d %b %Y, %H:%M") }}{% endif %}
+            </p>
+        {% endif %}
+    </article>
+{% else %}
+    <p class="empty-state">No {{ '' if status == 'all' else status }} reports.</p>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Admin: action log{% endblock %}
+
+{% block content %}
+<h2>Admin</h2>
+{% include "admin/_nav.html" %}
+
+<p class="muted">Every admin action, newest first. Times are UTC.</p>
+
+<div class="table-wrap">
+<table class="admin-table">
+    <thead>
+        <tr><th>When</th><th>Admin</th><th>Action</th><th>Details</th></tr>
+    </thead>
+    <tbody>
+        {% for e in entries %}
+            <tr>
+                <td class="nowrap">{{ e.created_at.strftime("%d %b %Y, %H:%M") }}</td>
+                <td>{{ e.admin.name }}</td>
+                <td>{{ e.action|replace('_', ' ')|capitalize }}</td>
+                <td>{{ e.details or '' }}</td>
+            </tr>
+        {% else %}
+            <tr><td colspan="4" class="muted">Nothing logged yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

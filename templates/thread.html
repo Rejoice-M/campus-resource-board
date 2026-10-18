@@ -23,6 +23,7 @@
     </div>
 
     <form method="post" class="thread-reply">
+        {% include "_csrf.html" %}
         <textarea name="body" rows="3" placeholder="Write a message..." required></textarea>
         <button type="submit" class="btn-primary">Send</button>
     </form>

@@ -1,10 +1,10 @@
 """
-Create/view/edit/delete listings (CRUD).
-Browse page + search/filter by category and keyword.
+Week 3 focus: create/view/edit/delete listings (CRUD).
+Week 4 focus: browse page + search/filter by category and keyword.
 """
 
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from models import db, Listing, Category
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, abort, g
+from models import db, Listing, Category, User, Report
 from utils import (
     login_required,
     require_ownership,
@@ -15,10 +15,20 @@ from utils import (
 
 listings_bp = Blueprint("listings", __name__)
 
+REPORT_REASONS = [
+    "Spam or scam",
+    "Inappropriate content",
+    "Misleading or fake listing",
+    "Other",
+]
+
 
 @listings_bp.route("/")
 def browse():
-    query = Listing.query
+    # Listings from deactivated accounts never appear in browse
+    query = Listing.query.join(User, Listing.user_id == User.id).filter(
+        User.is_active.is_(True)
+    )
 
     category_id = request.args.get("category")
     keyword = request.args.get("q")
@@ -33,7 +43,7 @@ def browse():
         )
 
     if sort == "price_low":
-        # Free listings (price is NULL) sort first either way, nullsfirst keeps that explicit
+        # Free listings (price is NULL) sort first either way — nullsfirst keeps that explicit
         query = query.order_by(Listing.price.asc().nullsfirst())
     else:
         query = query.order_by(Listing.created_at.desc())
@@ -49,7 +59,13 @@ def browse():
 @listings_bp.route("/listing/<int:listing_id>")
 def detail(listing_id):
     listing = Listing.query.get_or_404(listing_id)
-    is_owner = current_user_owns(listing)   # controls edit/delete UI in the template
+
+    # A deactivated user's listings are hidden; only admins can still open them
+    viewer = g.get("current_user")
+    if not listing.owner.is_active and not (viewer and viewer.is_admin):
+        abort(404)
+
+    is_owner = current_user_owns(listing)
     return render_template("listing_detail.html", listing=listing, is_owner=is_owner)
 
 
@@ -62,7 +78,6 @@ def create():
         try:
             image_filename = save_listing_image(request.files.get("image"))
         except ValueError as e:
-            # Bad file type/size, re-render with the form intact rather than losing input
             flash(str(e))
             return render_template("listing_form.html", categories=categories, listing=None)
 
@@ -71,7 +86,7 @@ def create():
             category_id=request.form["category_id"],
             title=request.form["title"],
             description=request.form.get("description"),
-            price=request.form.get("price") or None,    # empty string -> NULL (free)
+            price=request.form.get("price") or None,
             image_filename=image_filename,
         )
         db.session.add(listing)
@@ -97,7 +112,6 @@ def edit(listing_id):
 
         remove_image = request.form.get("remove_image") == "1"
 
-        # New upload wins over a remove request; otherwise honour the checkbox
         if new_image:
             delete_listing_image(listing.image_filename)
             listing.image_filename = new_image
@@ -121,7 +135,7 @@ def delete(listing_id):
     listing = Listing.query.get_or_404(listing_id)
     require_ownership(listing)
 
-    delete_listing_image(listing.image_filename)    # don't orphan the file on disk
+    delete_listing_image(listing.image_filename)
     db.session.delete(listing)
     db.session.commit()
     return redirect(url_for("listings.browse"))
@@ -133,7 +147,47 @@ def toggle_status(listing_id):
     listing = Listing.query.get_or_404(listing_id)
     require_ownership(listing)
 
-    # Flip between the only two valid states
     listing.status = "resolved" if listing.status == "active" else "active"
     db.session.commit()
     return redirect(url_for("listings.detail", listing_id=listing.id))
+
+
+@listings_bp.route("/listing/<int:listing_id>/report", methods=["GET", "POST"])
+@login_required
+def report(listing_id):
+    listing = Listing.query.get_or_404(listing_id)
+    if not listing.owner.is_active:
+        abort(404)
+
+    uid = session["user_id"]
+
+    if current_user_owns(listing):
+        flash("You can't report your own listing.")
+        return redirect(url_for("listings.detail", listing_id=listing.id))
+
+    already_reported = Report.query.filter_by(
+        listing_id=listing.id, reporter_id=uid, status="open"
+    ).first()
+    if already_reported:
+        flash("You've already reported this listing — an admin will review it.")
+        return redirect(url_for("listings.detail", listing_id=listing.id))
+
+    if request.method == "POST":
+        reason = request.form.get("reason", "")
+        if reason not in REPORT_REASONS:
+            flash("Please choose a reason for the report.")
+            return redirect(url_for("listings.report", listing_id=listing.id))
+
+        details = request.form.get("details", "").strip()[:1000] or None
+        db.session.add(Report(
+            listing_id=listing.id,
+            listing_title=listing.title,  # snapshot, in case the listing is removed later
+            reporter_id=uid,
+            reason=reason,
+            details=details,
+        ))
+        db.session.commit()
+        flash("Thanks — an admin will review this listing.", "success")
+        return redirect(url_for("listings.detail", listing_id=listing.id))
+
+    return render_template("report.html", listing=listing, reasons=REPORT_REASONS)

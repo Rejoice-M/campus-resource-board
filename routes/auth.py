@@ -1,9 +1,11 @@
 """
-Signup, login, logout, password hashing, sessions.
+Week 2 focus: signup, login, logout, password hashing, sessions.
+Build this before anything else — see BUILD ORDER NOTES in the project plan.
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from models import db, User
+from utils import is_safe_redirect
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -17,11 +19,10 @@ def signup():
         confirm_password = request.form["confirm_password"]
 
         university = request.form.get("university", "").strip()
-        major = request.form.get("major", "").strip() or None  
+        major = request.form.get("major", "").strip() or None  # only optional field
         year_of_study = request.form.get("year_of_study", "").strip()
         phone_number = request.form.get("phone_number", "").strip()
 
-        # Validate before touching the DB so we never write a half-valid user
         if not university or not year_of_study or not phone_number:
             flash("University, year of study, and phone number are required.")
             return redirect(url_for("auth.signup"))
@@ -46,11 +47,10 @@ def signup():
             year_of_study=year_of_study,
             phone_number=phone_number,
         )
-        user.set_password(password)   # hashes before storing
+        user.set_password(password)
         db.session.add(user)
         db.session.commit()
 
-        # Log the new user in immediately so signup isn't a dead-end
         session["user_id"] = user.id
         return redirect(url_for("listings.browse"))
 
@@ -62,11 +62,18 @@ def login():
     if request.method == "POST":
         email = request.form["email"].strip().lower()
         password = request.form["password"]
-        next_path = request.form.get("next") or url_for("listings.browse")
+        next_path = request.form.get("next", "")
+        # Only ever redirect to a path on this site — never to a URL a crafted link supplied
+        if not is_safe_redirect(next_path):
+            next_path = url_for("listings.browse")
 
         user = User.query.filter_by(email=email).first()
-        # Single generic error for both cases — don't leak which emails exist
         if user and user.check_password(password):
+            # Only say "deactivated" once the password is right, so the login form
+            # can't be used to discover which emails have accounts
+            if not user.is_active:
+                flash("This account has been deactivated. Contact an administrator if you think that's a mistake.")
+                return redirect(url_for("auth.login"))
             session["user_id"] = user.id
             return redirect(next_path)
 
@@ -75,6 +82,8 @@ def login():
 
     # Preserve ?next=... from a login_required redirect through to the POST above
     next_path = request.args.get("next", "")
+    if not is_safe_redirect(next_path):
+        next_path = ""
     return render_template("login.html", next=next_path)
 
 

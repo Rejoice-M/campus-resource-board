@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Admin: listings{% endblock %}
+
+{% block content %}
+<h2>Admin</h2>
+{% include "admin/_nav.html" %}
+
+<form class="search-bar" method="get" action="{{ url_for('admin.listings') }}">
+    <input type="text" name="q" placeholder="Search title, description, poster name or email..." value="{{ q }}">
+    <select name="category">
+        <option value="">All categories</option>
+        {% for c in categories %}
+            <option value="{{ c.id }}" {% if category|string == c.id|string %}selected{% endif %}>{{ c.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Search</button>
+</form>
+
+<p class="muted">{{ total }} listing{{ '' if total == 1 else 's' }}{% if total > limit %} — showing the newest {{ limit }}{% endif %}</p>
+
+<div class="table-wrap">
+<table class="admin-table">
+    <thead>
+        <tr><th>Listing</th><th>Category</th><th>Posted by</th><th>Posted</th><th></th></tr>
+    </thead>
+    <tbody>
+        {% for l in listings %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('listings.detail', listing_id=l.id) }}">{{ l.title }}</a>
+                    {% if l.status != 'active' %}<span class="status-badge">Resolved</span>{% endif %}
+                    {% if open_report_counts.get(l.id) %}<span class="flag-badge">{{ open_report_counts[l.id] }} report{{ '' if open_report_counts[l.id] == 1 else 's' }}</span>{% endif %}
+                </td>
+                <td>{{ l.category.name }}</td>
+                <td>
+                    {{ l.owner.name }}
+                    {% if not l.owner.is_active %}<span class="status-badge">Deactivated</span>{% endif %}
+                    <br><span class="muted">{{ l.owner.email }}</span>
+                </td>
+                <td class="nowrap">{{ l.created_at.strftime("%d %b %Y") }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('admin.remove_listing', listing_id=l.id) }}"
+                          onsubmit="return confirm('Permanently remove this listing, its photo and its conversations?');">
+                        {% include "_csrf.html" %}
+                        <button type="submit" class="btn-danger btn-small">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="5" class="muted">No listings match.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

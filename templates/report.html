@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Report listing{% endblock %}
+
+{% block content %}
+{% include "_back_link.html" %}
+<div class="form-card">
+    <h2>Report this listing</h2>
+    <p class="form-subtext">About: <strong>{{ listing.title }}</strong></p>
+    <form method="post">
+        {% include "_csrf.html" %}
+        <label>Reason
+            <select name="reason" required>
+                <option value="" disabled selected>Select one</option>
+                {% for r in reasons %}
+                    <option value="{{ r }}">{{ r }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Anything else an admin should know? <span class="optional-tag">(optional)</span>
+            <textarea name="details" rows="4" maxlength="1000"></textarea>
+        </label>
+        <button type="submit" class="btn-primary">Send report</button>
+    </form>
+</div>
+{% endblock %}
