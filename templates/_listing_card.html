@@ -11,7 +11,7 @@
                 {% if listing.status != 'active' %}<span class="status-badge">Resolved</span>{% endif %}
             </span>
             <h3>{{ listing.title }}</h3>
-            <span class="listing-price">{% if listing.price %}R{{ listing.price }}{% else %}Free{% endif %}</span>
+            <span class="listing-price">{% if listing.price %}R{{ '%.2f'|format(listing.price) }}{% else %}Free{% endif %}</span>
         </div>
     </a>
 </li>

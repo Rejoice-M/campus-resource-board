@@ -1,9 +1,9 @@
-/* ============================================
-   Campus Resource Board — design tokens
+/* 
+   Campus Resource Board 
    Concept: library catalog card meets noticeboard.
    Listings are color-coded by category so the board
    scans at a glance, like flyers pinned to cork.
-   ============================================ */
+ */
 
 :root {
     --navy: #1E3A5F;
@@ -138,7 +138,7 @@ a {
 
 .hero h2 {
     font-size: 2rem;
-    max-width: 20ch;
+    max-width: 36ch;
 }
 
 .hero p {
@@ -159,6 +159,13 @@ a {
 .search-bar input[type="text"] {
     flex: 1;
     min-width: 200px;
+    width: auto;        /* override the generic full-width form rule */
+    margin-top: 0;
+}
+
+.search-bar select {
+    width: auto;
+    margin-top: 0;
 }
 
 .search-bar input,
@@ -218,8 +225,9 @@ a {
 
 .listing-thumb {
     width: 100%;
-    height: 140px;
-    object-fit: cover;
+    height: 170px;
+    object-fit: contain;          /* show the whole photo; never crop it */
+    background: var(--paper);     /* neutral bars where the photo doesn't fill the box */
     border-radius: var(--radius) var(--radius) 0 0;
     display: block;
 }
@@ -242,13 +250,24 @@ a {
     padding: 1rem;
 }
 
-.listing-page-image {
-    width: 100%;
-    max-height: 320px;
-    object-fit: cover;
+.listing-page-image-wrap {
+    display: flex;
+    justify-content: center;
+    background: var(--paper);
     border-radius: var(--radius);
+    padding: 0.75rem;
     margin-bottom: 1rem;
+}
+
+.listing-page-image-wrap a { display: block; line-height: 0; cursor: zoom-in; }
+
+.listing-page-image {
     display: block;
+    width: auto;                  /* keep the photo's real proportions... */
+    max-width: 100%;              /* ...never wider than the card... */
+    max-height: 440px;            /* ...and never taller than this */
+    object-fit: contain;
+    border-radius: 4px;
 }
 
 .current-image-preview {
@@ -258,7 +277,8 @@ a {
 .current-image-preview img {
     max-width: 160px;
     max-height: 160px;
-    object-fit: cover;
+    object-fit: contain;
+    background: var(--paper);
     border-radius: var(--radius);
     border: 1px solid var(--line);
     display: block;

@@ -5,7 +5,11 @@
 {% include "_back_link.html" %}
 <article class="listing-page cat-{{ listing.category.name|lower|replace(' ', '-') }}">
     {% if listing.image_filename %}
-        <img class="listing-page-image" src="{{ url_for('static', filename='uploads/' + listing.image_filename) }}" alt="{{ listing.title }}">
+        <div class="listing-page-image-wrap">
+            <a href="{{ url_for('static', filename='uploads/' + listing.image_filename) }}" target="_blank" rel="noopener" title="Open full size">
+                <img class="listing-page-image" src="{{ url_for('static', filename='uploads/' + listing.image_filename) }}" alt="{{ listing.title }}">
+            </a>
+        </div>
     {% endif %}
     <span class="listing-category">
         {{ listing.category.name }}
@@ -13,7 +17,7 @@
     </span>
     <h2>{{ listing.title }}</h2>
     <p class="listing-meta">Posted by {{ listing.owner.name }}</p>
-    <p class="listing-price-large">{% if listing.price %}R{{ listing.price }}{% else %}Free{% endif %}</p>
+    <p class="listing-price-large">{% if listing.price %}R{{ '%.2f'|format(listing.price) }}{% else %}Free{% endif %}</p>
     <p class="listing-description">{{ listing.description }}</p>
 
     <div class="lister-info">
