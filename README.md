@@ -5,6 +5,25 @@ three categories: secondhand textbooks, study groups, and tutoring — with
 in-app messaging so students can connect without sharing personal contact
 details up front.
 
+## Screenshots
+
+**Browse and search** — filter by category, search by keyword, sort by newest or price. Every listing card shows the full photo.
+
+![Browse page with search, category filter and listing cards](docs/screenshots/browse.png)
+
+**Listing detail** — full photo (click to enlarge), price, and who is selling.
+
+![Listing detail page with a textbook photo](docs/screenshots/listing-detail.png)
+
+**In-app messaging** — a private conversation per listing between the seller and one buyer.
+
+![Message thread between a buyer and a seller](docs/screenshots/messaging.png)
+
+**Admin dashboard** — moderation stats, plus a queue of reported listings.
+
+![Admin dashboard](docs/screenshots/admin-dashboard.png)
+![Admin reports queue](docs/screenshots/admin-reports.png)
+
 ## Problem
 
 Students currently rely on scattered WhatsApp groups, Facebook posts, and word
