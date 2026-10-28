@@ -35,7 +35,8 @@ def browse():
     sort = request.args.get("sort", "newest")
 
     if category_id:
-        query = query.filter_by(category_id=category_id)
+        # Explicit column: after the join above, filter_by() would look on User, not Listing
+        query = query.filter(Listing.category_id == category_id)
     if keyword:
         like = f"%{keyword}%"
         query = query.filter(
